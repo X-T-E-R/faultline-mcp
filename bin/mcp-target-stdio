@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Faultline\Ledger\LedgerStore;
+use Faultline\TargetServer\CommerceServerFactory;
+use Mcp\Server\Transport\StdioTransport;
+
+require dirname(__DIR__).'/vendor/autoload.php';
+
+$dbPath = getenv('FAULTLINE_DB_PATH') ?: dirname(__DIR__).'/var/faultline.sqlite';
+$scope = getenv('FAULTLINE_LEDGER_SCOPE') ?: 'default';
+$paginationLimit = max(1, (int) (getenv('FAULTLINE_PAGINATION_LIMIT') ?: '50'));
+$sessionDir = dirname(__DIR__).'/var/mcp-stdio-sessions';
+
+$ledger = new LedgerStore($dbPath);
+$ledger->ensureSeeded($scope);
+
+$server = CommerceServerFactory::createServer(
+    ledger: $ledger,
+    scope: $scope,
+    sessionStorageDir: $sessionDir,
+    paginationLimit: $paginationLimit,
+);
+
+exit((int) $server->run(new StdioTransport()));

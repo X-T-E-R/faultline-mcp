@@ -1,0 +1,74 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Faultline\Chaos\ChaosEngine;
+use Faultline\Chaos\ChaosScenarioCatalog;
+use Faultline\FlightRecorder\FlightRecorder;
+use Faultline\Ledger\LedgerStore;
+use Faultline\Proxy\BidirectionalChaosProxy;
+
+require dirname(__DIR__).'/vendor/autoload.php';
+
+$dbPath = getenv('FAULTLINE_DB_PATH') ?: dirname(__DIR__).'/var/faultline.sqlite';
+$scenarioId = getenv('FAULTLINE_SCENARIO') ?: 'post_commit_truncation';
+$seed = (int) (getenv('FAULTLINE_SEED') ?: '20261123');
+$runId = getenv('FAULTLINE_RUN_ID') ?: ('stdio_'.bin2hex(random_bytes(4)));
+$track = getenv('FAULTLINE_TRACK') ?: 'unguarded';
+$targetScript = getenv('FAULTLINE_TARGET_SCRIPT') ?: (dirname(__DIR__).'/bin/mcp-target-stdio');
+
+$ledger = new LedgerStore($dbPath);
+$recorder = new FlightRecorder($ledger->getPdo());
+$scenario = ChaosScenarioCatalog::get($scenarioId);
+$proxy = new BidirectionalChaosProxy(new ChaosEngine($recorder), $recorder);
+
+$recorder->startRun($runId, $scenario->id, $seed, $track);
+
+$descriptors = [
+    0 => ['pipe', 'r'],
+    1 => ['pipe', 'w'],
+    2 => STDERR,
+];
+
+$env = array_merge(getenv(), [
+    'FAULTLINE_DB_PATH' => $dbPath,
+    'FAULTLINE_LEDGER_SCOPE' => $track,
+    'FAULTLINE_PAGINATION_LIMIT' => (string) $scenario->paginationLimit,
+]);
+
+$process = proc_open([PHP_BINARY, $targetScript], $descriptors, $pipes, dirname(__DIR__), $env);
+if (!is_resource($process)) {
+    fwrite(STDERR, "Failed to spawn upstream STDIO MCP server.\n");
+    exit(1);
+}
+
+$sendUpstreamLine = static function (string $jsonLine) use ($pipes): string {
+    fwrite($pipes[0], $jsonLine."\n");
+    fflush($pipes[0]);
+    $reply = fgets($pipes[1]);
+
+    return false !== $reply ? rtrim($reply, "\r\n") : '';
+};
+
+while (false !== ($line = fgets(STDIN))) {
+    $responseLine = $proxy->handleStdioLine(
+        rawLine: $line,
+        sendUpstreamLine: $sendUpstreamLine,
+        runId: $runId,
+        seed: $seed,
+        scenario: $scenario,
+        track: $track,
+    );
+
+    if (null !== $responseLine && '' !== $responseLine) {
+        fwrite(STDOUT, $responseLine."\n");
+        fflush(STDOUT);
+    }
+}
+
+fclose($pipes[0]);
+fclose($pipes[1]);
+$exitCode = proc_close($process);
+$recorder->finishRun($runId, 'completed', ['exit_code' => $exitCode]);
+exit($exitCode);

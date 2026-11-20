@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Faultline MCP — Deterministic Chaos Proxy &amp; Flight Recorder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/oscilloscope.css">
+</head>
+<body data-instrument="faultline-rack-v1">
+  <div class="chassis-shell">
+    <header class="masthead-bar">
+      <div class="brand-cluster">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="1" y="1" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M3.5 11.5H7L9 5.5L11.5 14.5L13.5 9.5H16.5" stroke="#D97706" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+        </div>
+        <div>
+          <div class="eyebrow-code">MODEL CONTEXT PROTOCOL · FLIGHT RECORDER · SFAI-6T8Y</div>
+          <h1 class="brand-title">FAULTLINE MCP</h1>
+        </div>
+      </div>
+
+      <div class="runtime-strip" id="runtime-strip" aria-label="Active protocol stack">
+        <span class="spec-chip">MCP SDK v0.10.0</span>
+        <span class="spec-chip">SYMFONY AI 1.0</span>
+        <span class="spec-chip">STDIO + HTTP</span>
+        <span class="spec-chip spec-chip--accent" id="engine-mode-chip">DETERMINISTIC ENGINE</span>
+      </div>
+    </header>
+
+    <section class="control-deck" aria-label="Deterministic scenario controls">
+      <div class="scenario-rail" id="scenario-rail" role="tablist" aria-label="Chaos scenarios">
+        <button type="button" class="scenario-btn is-active" data-scenario="post_commit_truncation" role="tab" aria-selected="true">
+          <span class="scenario-btn__code">CH-01</span>
+          <span class="scenario-btn__label">Truncated Frame</span>
+        </button>
+        <button type="button" class="scenario-btn" data-scenario="http_429_storm" role="tab" aria-selected="false">
+          <span class="scenario-btn__code">CH-02</span>
+          <span class="scenario-btn__label">HTTP 429 Storm</span>
+        </button>
+        <button type="button" class="scenario-btn" data-scenario="retry_hallucination" role="tab" aria-selected="false">
+          <span class="scenario-btn__code">CH-03</span>
+          <span class="scenario-btn__label">Hallucination Trap</span>
+        </button>
+        <button type="button" class="scenario-btn" data-scenario="schema_drift" role="tab" aria-selected="false">
+          <span class="scenario-btn__code">CH-04</span>
+          <span class="scenario-btn__label">100x Schema Drift</span>
+        </button>
+        <button type="button" class="scenario-btn" data-scenario="cursor_tamper" role="tab" aria-selected="false">
+          <span class="scenario-btn__code">CH-05</span>
+          <span class="scenario-btn__label">Cursor Poison</span>
+        </button>
+        <button type="button" class="scenario-btn" data-scenario="gauntlet_all" role="tab" aria-selected="false">
+          <span class="scenario-btn__code">CH-06</span>
+          <span class="scenario-btn__label">Full Gauntlet</span>
+        </button>
+      </div>
+
+      <form class="trigger-group" id="duel-form">
+        <div class="seed-field">
+          <label for="seed-input" class="seed-label">PRNG SEED</label>
+          <input id="seed-input" name="seed" type="number" value="20261123" min="1" max="2147483647" class="seed-input">
+          <button type="button" id="reseed-btn" class="icon-keycap" title="Cycle deterministic seed" aria-label="Cycle deterministic seed">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M2.5 8A5.5 5.5 0 0 1 12.2 4.5M13.5 8A5.5 5.5 0 0 1 3.8 11.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M12.5 2V4.8H9.7M3.5 14V11.2H6.3" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </button>
+        </div>
+
+        <button type="submit" id="run-duel-btn" class="trigger-btn">
+          <span class="trigger-led" aria-hidden="true"></span>
+          <span id="run-duel-label">INJECT &amp; REPLAY</span>
+        </button>
+      </form>
+    </section>
+
+    <main class="workspace-stage">
+      <!-- Visual Protagonist: Recessed Dark Logic-Analyzer & Protocol Oscilloscope Well -->
+      <section class="scope-housing" data-style-layer="chassis" aria-labelledby="scope-heading">
+        <div class="scope-well" data-style-layer="oled">
+          <div class="scope-readout-bar">
+            <div class="scope-title-block">
+              <span class="scope-channel-tag" id="active-category-tag">TRUNCATED_WIRE_DROP</span>
+              <h2 id="scope-heading" class="scope-title">Post-Commit Truncated JSON-RPC Frame</h2>
+              <p id="scope-summary" class="scope-caption">Upstream commits EUR 149.00 refund to SQLite, then proxy severs outbound JSON-RPC at byte 42.</p>
+            </div>
+
+            <div class="telemetry-strip">
+              <div class="telemetry-cell">
+                <span class="telemetry-key">UNGUARDED AGENT</span>
+                <strong class="telemetry-val telemetry-val--danger" id="metric-unguarded-verdict">DOUBLE_REFUND_DETECTED</strong>
+                <span class="telemetry-sub" id="metric-unguarded-sub">Score 10/100 · -298.00 EUR</span>
+              </div>
+              <div class="telemetry-cell">
+                <span class="telemetry-key">FAULTLINE GUARDED</span>
+                <strong class="telemetry-val telemetry-val--safe" id="metric-guarded-verdict">INVARIANT_PRESERVED</strong>
+                <span class="telemetry-sub" id="metric-guarded-sub">Score 100/100 · -149.00 EUR</span>
+              </div>
+              <div class="telemetry-cell">
+                <span class="telemetry-key">CAPITAL PROTECTED</span>
+                <strong class="telemetry-val telemetry-val--amber" id="metric-capital-saved">EUR 149.00</strong>
+                <span class="telemetry-sub" id="metric-timing-sub">Seed #20261123 · 12.4 ms</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="oscilloscope-canvas-wrap">
+            <svg id="oscilloscope-svg" class="oscilloscope-svg" viewBox="0 0 1160 286" role="img" aria-label="Dual-channel JSON-RPC protocol timeline and fault waveform"></svg>
+          </div>
+
+          <div class="scope-legend-bar">
+            <div class="legend-items">
+              <span class="legend-item"><i class="swatch swatch--ok"></i>Nominal JSON-RPC</span>
+              <span class="legend-item"><i class="swatch swatch--fault"></i>Injected Wire Fault (429 / Trunc / Drift / Loop)</span>
+              <span class="legend-item"><i class="swatch swatch--leak"></i>Duplicate Side-Effect Write</span>
+              <span class="legend-item"><i class="swatch swatch--guard"></i>Idempotent Seal / Schema Guard</span>
+            </div>
+            <div class="scope-hint" id="selected-frame-indicator">CLICK ANY PULSE NODE TO INSPECT WIRE PAYLOAD</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Below-Well Asymmetric 7:5 Inspection Split -->
+      <section class="inspector-grid" aria-label="Frame payload and SQLite ledger diff">
+        <div class="panel-box inspector-panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">WIRE FRAME FLIGHT RECORDER</div>
+              <h3 class="panel-title">JSON-RPC Frame &amp; Seal Inspector</h3>
+            </div>
+            <div class="track-filter" role="group" aria-label="Filter wire track">
+              <button type="button" class="filter-btn is-active" data-track-filter="unguarded">CH1 Unguarded</button>
+              <button type="button" class="filter-btn" data-track-filter="guarded">CH2 Guarded</button>
+            </div>
+          </div>
+
+          <div class="frame-table-wrap">
+            <table class="wire-table">
+              <thead>
+                <tr>
+                  <th>SEQ</th>
+                  <th>METHOD / TOOL</th>
+                  <th>HTTP</th>
+                  <th>LATENCY</th>
+                  <th>FAULT / GUARD</th>
+                </tr>
+              </thead>
+              <tbody id="frame-table-body"></tbody>
+            </table>
+          </div>
+
+          <div class="payload-split">
+            <div class="code-pane">
+              <div class="code-pane__head">
+                <span id="req-pane-label">OUTBOUND REQUEST JSON-RPC</span>
+                <span class="byte-meta" id="req-byte-meta">0 B</span>
+              </div>
+              <pre class="code-dump" id="raw-request-dump">{}</pre>
+            </div>
+            <div class="code-pane">
+              <div class="code-pane__head">
+                <span id="resp-pane-label">DELIVERED WIRE RESPONSE</span>
+                <span class="byte-meta" id="resp-byte-meta">0 B</span>
+              </div>
+              <pre class="code-dump" id="raw-response-dump">{}</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-box ledger-panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">SQLITE SETTLEMENT INVARIANTS</div>
+              <h3 class="panel-title">Side-Effect Ledger Diff</h3>
+            </div>
+            <span class="order-badge" id="target-order-badge">ORD-9042</span>
+          </div>
+
+          <div class="diff-summary-grid">
+            <div class="diff-col diff-col--unguarded">
+              <div class="diff-col__head">
+                <span>CH1 · UNGUARDED</span>
+                <strong id="diff-u-status" class="tag-pill tag-pill--danger">ANOMALY</strong>
+              </div>
+              <dl class="kv-list">
+                <div><dt>Net Delta</dt><dd id="diff-u-delta">-298.00 EUR</dd></div>
+                <div><dt>Expected</dt><dd id="diff-u-expected">-149.00 EUR</dd></div>
+                <div><dt>SQLite Writes</dt><dd id="diff-u-writes">2 rows (1 leak)</dd></div>
+                <div><dt>Toolbox Size</dt><dd id="diff-u-tools">5 tools</dd></div>
+              </dl>
+              <div class="entries-label">COMMITTED LEDGER ROWS</div>
+              <div class="ledger-rows" id="diff-u-rows"></div>
+              <div class="agent-quote" id="diff-u-quote"></div>
+            </div>
+
+            <div class="diff-col diff-col--guarded">
+              <div class="diff-col__head">
+                <span>CH2 · FAULTLINE GUARDED</span>
+                <strong id="diff-g-status" class="tag-pill tag-pill--safe">VERIFIED</strong>
+              </div>
+              <dl class="kv-list">
+                <div><dt>Net Delta</dt><dd id="diff-g-delta">-149.00 EUR</dd></div>
+                <div><dt>Expected</dt><dd id="diff-g-expected">-149.00 EUR</dd></div>
+                <div><dt>SQLite Writes</dt><dd id="diff-g-writes">1 row (0 leaks)</dd></div>
+                <div><dt>Toolbox Size</dt><dd id="diff-g-tools">5 tools</dd></div>
+              </dl>
+              <div class="entries-label">COMMITTED LEDGER ROWS</div>
+              <div class="ledger-rows" id="diff-g-rows"></div>
+              <div class="agent-quote" id="diff-g-quote"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="colophon-bar">
+      <span>ENDPOINTS: <code>POST /mcp/proxy</code> · <code>POST /mcp/target</code> · <code>ui://faultline/oscilloscope</code></span>
+      <span>CLI: <code>php bin/console faultline:duel --seed=20261123</code></span>
+    </footer>
+  </div>
+
+  <script src="/assets/oscilloscope.js" defer></script>
+</body>
+</html>

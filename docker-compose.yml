@@ -1,0 +1,22 @@
+services:
+  faultline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: faultline-mcp
+    ports:
+      - "8080:8080"
+    environment:
+      FAULTLINE_DB_PATH: /app/var/faultline.sqlite
+      HF_TOKEN: ${HF_TOKEN:-}
+      HF_MODEL: ${HF_MODEL:-Qwen/Qwen2.5-72B-Instruct}
+    volumes:
+      - faultline_var:/app/var
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  faultline_var:

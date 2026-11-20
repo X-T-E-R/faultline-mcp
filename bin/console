@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Faultline\Command\RunChaosDuelCommand;
+use Symfony\Component\Console\Application;
+
+require dirname(__DIR__).'/vendor/autoload.php';
+
+$app = new Application('Faultline MCP', '1.0.0');
+$app->add(new RunChaosDuelCommand());
+exit($app->run());

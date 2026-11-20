@@ -1,0 +1,24 @@
+# Runtime dependencies and generated state
+/vendor/
+/var/
+/.phpunit.cache/
+/.phpstan.cache/
+.env.local
+.env.*.local
+
+# Local scratch, logs, editor backups, and inspection receipts
+/.scratch/
+/scratch/
+/tmp/
+*.tmp
+*.temp
+*.scratch
+*.log
+*.swp
+*.swo
+*.bak
+submission_receipt_*.html
+submission_receipt_*.png
+submission_receipt_*.jpg
+submission_receipt_*.json
+hf_perk_receipt.md
