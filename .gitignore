@@ -21,4 +21,6 @@ submission_receipt_*.html
 submission_receipt_*.png
 submission_receipt_*.jpg
 submission_receipt_*.json
+submission_receipt_*.md
+submission_response_*.html
 hf_perk_receipt.md

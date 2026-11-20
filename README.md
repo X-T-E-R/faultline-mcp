@@ -22,7 +22,7 @@ Happy-path MCP demos assume every JSON-RPC frame arrives intact, tool schemas st
 ## 60-Second Quickstart (Zero API Keys Required)
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/X-T-E-R/faultline-mcp.git
 cd Symfony_Faultline_MCP
 docker compose up -d --build
 ```
@@ -133,6 +133,8 @@ Stress-testing `mcp/sdk` `v0.10.0`, `symfony/ai-agent` `v1.0.0-BETA1`, and `symf
 ---
 
 ## `<= 90s` Demo Video Runbook
+
+**Direct MP4:** [Faultline_MCP_Demo_Video.mp4](https://github.com/X-T-E-R/faultline-mcp/releases/download/v1.0.0/Faultline_MCP_Demo_Video.mp4)
 
 - **`0:00 – 0:12` (The Hook):** Show `http://localhost:8080` on `CH-01 Truncated Frame` (`Seed #20261123`). Point out `CH1 Unguarded` (`DOUBLE_REFUND_DETECTED · -298.00 EUR`) vs `CH2 Guarded` (`INVARIANT_PRESERVED · -149.00 EUR`).
 - **`0:12 – 0:32` (Forensic Wire Proof):** Click pulse `#4` (`TRUNC_42B`) on the SVG oscilloscope -> scroll down to the JSON-RPC inspector showing the response severed mid-JSON at byte 42 after SQLite already committed `RFND-0001`, followed by crimson `RFND-0002` leak on `CH1` vs `SAFE_IDEMPOTENT_REPLAY` on `CH2`.
