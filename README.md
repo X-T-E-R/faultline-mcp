@@ -23,7 +23,7 @@ Happy-path MCP demos assume every JSON-RPC frame arrives intact, tool schemas st
 
 ```bash
 git clone https://github.com/X-T-E-R/faultline-mcp.git
-cd Symfony_Faultline_MCP
+cd faultline-mcp
 docker compose up -d --build
 ```
 
